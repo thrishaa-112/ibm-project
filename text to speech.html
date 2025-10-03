@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Watson Text-to-Speech Demo</title>
+</head>
+<body>
+  <h1>Watson Text-to-Speech</h1>
+  <textarea id="textInput" placeholder="Type text to speak..." rows="6" cols="50"></textarea><br />
+  <button onclick="speak()">Speak</button>
+  <audio id="audio" controls></audio>
+
+  <script>
+    async function speak() {
+      const text = document.getElementById('textInput').value;
+      if (!text) {
+        alert('Please enter some text!');
+        return;
+      }
+
+      const apiKey = 'EAlf4DxwVWoebVIh8Pb8Ov2Nl0ymKjEnrgfSaiTv32l0';
+      const url = 'https://api.au-syd.text-to-speech.watson.cloud.ibm.com/instances/e7bd3aa2-2edb-4870-8ffe-aeb86ae1e68a/v1/synthesize?voice=en-US_AllisonV3Voice';
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'audio/wav',
+            'Authorization': 'Basic ' + btoa('apikey:' + apiKey),
+          },
+          body: JSON.stringify({ text }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Error: ' + response.status);
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        const blob = new Blob([arrayBuffer], { type: 'audio/wav' });
+        const audioUrl = URL.createObjectURL(blob);
+
+        const audio = document.getElementById('audio');
+        audio.src = audioUrl;
+        audio.play();
+
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+  </script>
+</body>
+</html>

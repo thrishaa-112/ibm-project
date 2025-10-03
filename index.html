@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Admission Bot</title>
+</head>
+
+<body>
+    <h1>Welcome to College Admission Bot</h1>
+
+    <!-- Buttons with links -->
+    <button><a href="about.html">About</a></button>
+    <button><a href="login.html">Login</a></button>
+    <button><a href="sentiment.html">Sentiment</a></button>
+    <button><a href="text to speech.html">Text to Speech</a></button>
+
+    <!-- Bot Avatar with updated image -->
+    <h2>Meet Your College Admission Bot</h2>
+    <img src="https://reply.io/wp-content/uploads/Virtual-AI-assistant.png"
+         alt="AI Assistant Animation"
+         width="50%" />
+
+    <!-- Watson Assistant Script -->
+    <script>
+        window.watsonAssistantChatOptions = {
+            integrationID: "25c7dab2-c57d-469b-901b-5024f2fa75b6",
+            region: "au-syd",
+            serviceInstanceID: "80af49a2-40ac-4f43-b52f-c8957949dc9d",
+            onLoad: async (instance) => { await instance.render(); }
+        };
+        setTimeout(function () {
+            const t = document.createElement('script');
+            t.src = "https://web-chat.global.assistant.watson.appdomain.cloud/versions/" +
+                    (window.watsonAssistantChatOptions.clientVersion || 'latest') +
+                    "/WatsonAssistantChatEntry.js";
+            document.head.appendChild(t);
+        });
+    </script>
+</body>
+
+</html>

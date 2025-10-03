@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Watson Sentiment Analyzer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+    h1 {
+      color: #38bdf8;
+    }
+    textarea {
+      width: 100%;
+      max-width: 600px;
+      height: 150px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      resize: vertical;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    button {
+      background: #38bdf8;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #0f172a;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #0ea5e9;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #1e293b;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 100%;
+      font-size: 18px;
+      text-align: center;
+    }
+    .positive {
+      color: #22c55e; /* green */
+    }
+    .negative {
+      color: #ef4444; /* red */
+    }
+    .neutral {
+      color: #facc15; /* yellow */
+    }
+  </style>
+</head>
+<body>
+  <h1>Watson Sentiment Analyzer</h1>
+  <textarea id="textInput" placeholder="Type text here..."></textarea>
+  <br>
+  <button onclick="analyzeSentiment()">Analyze Sentiment</button>
+  <div class="result" id="result">Result will appear here...</div>
+
+  <script>
+    async function analyzeSentiment() {
+      const text = document.getElementById("textInput").value;
+      if (!text) {
+        alert("Please enter text!");
+        return;
+      }
+
+      const apiKey = "KHo4HIJ911HcfbWxsRbAcB0b4CPLanlXT-PJ9-dAL_pD"; 
+      const url = "https://api.au-syd.natural-language-understanding.watson.cloud.ibm.com/instances/7fc350ba-a1b6-4560-bb1b-5aeee01acdb5/v1/analyze?version=2021-08-01";
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Basic " + btoa("apikey:" + apiKey)
+          },
+          body: JSON.stringify({
+            text: text,
+            features: {
+              sentiment: {}
+            }
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error("Error: " + response.status);
+        }
+
+        const data = await response.json();
+
+        // Extract only sentiment info
+        const sentiment = data.sentiment.document.label;
+        const score = data.sentiment.document.score.toFixed(3);
+
+        // Set color depending on sentiment
+        let sentimentClass = "";
+        if (sentiment === "positive") sentimentClass = "positive";
+        else if (sentiment === "negative") sentimentClass = "negative";
+        else sentimentClass = "neutral";
+
+        document.getElementById("result").innerHTML = `
+          <div class="${sentimentClass}">
+            <strong>Sentiment:</strong> ${sentiment.toUpperCase()} <br>
+            <strong>Score:</strong> ${score}
+          </div>
+        `;
+      } catch (error) {
+        document.getElementById("result").textContent = "Error: " + error;
+      }
+    }
+  </script>
+</body>
+</html>
